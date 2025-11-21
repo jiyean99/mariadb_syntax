@@ -61,7 +61,8 @@ CREATE TABLE member (
     id        INT AUTO_INCREMENT PRIMARY KEY,     -- 기본 키
     email     VARCHAR(100) NOT NULL UNIQUE,      -- 이메일, 중복 불가
     name      VARCHAR(50)  NOT NULL,             -- 이름
-    created_at DATETIME     DEFAULT NOW()        -- 생성 일시
+    created_at DATETIME     DEFAULT NOW(),        -- 생성 일시
+    foreign key(author_id) references author(id)
 );
 
 -- 2) 테이블 구조(컬럼 정보) 조회
