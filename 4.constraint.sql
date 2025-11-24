@@ -211,3 +211,42 @@ ON UPDATE CASCADE;
 --  삭제:
 --    - 보통 UNIQUE INDEX 를 drop 하는 방식으로 제거
 --      (DB/툴에 따라 방식 상이. MySQL에선 show index 로 이름 확인 후 drop index 사용 등)
+
+-- ------------------------------------------
+-- 5. 컬럼 옵션(제약조건이라기보다는 설정 옵션)
+-- ------------------------------------------
+
+-- 1) DEFAULT 값 지정
+--  - 거의 모든 컬럼 타입에 설정 가능
+--  - 자주 사용하는 예:
+--    - 기본 문자열 지정: DEFAULT 'anonymous'
+--    - ENUM 의 기본값 지정
+--    - DATETIME / TIMESTAMP 의 현재시각 지정: DEFAULT CURRENT_TIMESTAMP
+
+-- 예) name 컬럼에 기본값 'anonymous' 지정
+ALTER TABLE author
+MODIFY COLUMN name VARCHAR(255) DEFAULT 'anonymous';
+
+-- 예) ENUM 타입 기본값 지정은 아래에서 다룸
+
+
+-- 2) AUTO_INCREMENT
+--  - 숫자 타입에서 많이 사용
+--  - 값을 명시적으로 넣지 않으면, 테이블 내 가장 큰 값보다 1 증가된 값 자동 입력
+--  - PK 에 주로 붙임
+
+-- 예) id 컬럼에 AUTO_INCREMENT 옵션 추가
+ALTER TABLE author
+MODIFY COLUMN id INT AUTO_INCREMENT;
+
+
+-- 3) UUID 사용
+
+-- UUID는 128비트 (16진수 32자 + 하이픈 포함 36자) 고유 식별자
+--  - ex) '550e8400-e29b-41d4-a716-446655440000'
+
+-- 예) post 테이블에 user_id 컬럼 추가, 기본값은 UUID 함수 호출 결과
+ALTER TABLE post
+ADD COLUMN user_id CHAR(36) DEFAULT (UUID());
+
+-- UUID는 숫자가 아닌 16진수 문자열(알파벳 a~f 포함) 형태임

@@ -67,7 +67,7 @@ REFERENCES author(id);
 -- ------------------------------------------
 -- 3. 실수 / 소수 타입 (DECIMAL)
 -- ------------------------------------------
--- DECIMAL(m, d)
+-- DECIMAL(m, d), 부동소수점
 --   - m : 전체 자리수 (정수부 + 소수부)
 --   - d : 소수부 자리수
 --   - 예) DECIMAL(4,1) → 총 4자리 중 소수 1자리 (###.# 형태)
@@ -91,8 +91,8 @@ VALUES (8, '홍길동4', 'test@naver.com', 173.5555);
 
 -- 4-1) 문자 타입
 --  - CHAR(m)   : 고정 길이 문자열 (항상 m자리를 차지, 짧으면 공백으로 채움)
---  - VARCHAR(m): 가변 길이 문자열 (실제 길이만큼 저장)
---  - TEXT      : 긴 텍스트(길이 큰 가변 문자열)
+--  - VARCHAR(m): 가변 길이 문자열 (실제 길이만큼 저장), 메모리 기반 저장
+--  - TEXT      : 긴 텍스트(길이 큰 가변 문자열), 스토리지 기반 저장
 --  - LONGTEXT  : 매우 긴 텍스트
 
 -- 실습 예시:
@@ -105,7 +105,7 @@ ALTER TABLE author
 ADD COLUMN self_introduction TEXT;
 
 -- 선택 기준:
---  - 길이가 딱 정해진 짧은 단어   → CHAR 또는 VARCHAR
+--  - 길이가 딱 정해진 짧은 단어, 빈번히 조회되는 데이터   → CHAR 또는 VARCHAR
 --  - 장문 텍스트                 → TEXT 또는 LONGTEXT
 --  - 그 외 대부분의 문자열      → VARCHAR
 
@@ -127,6 +127,7 @@ VALUES (9, 'blob', 'blob@naver.com', LOAD_FILE('C:\\\\test.jpg'));
 -- 4-3) ENUM
 --  - 허용 가능한 값의 집합을 미리 지정하는 타입.
 --  - 컬럼명 ENUM('값1', '값2', ...)
+--  - DEFAULT 속성 부여 가능
 
 -- 예시: role 컬럼 추가 (admin 또는 user)
 ALTER TABLE author
@@ -215,7 +216,7 @@ WHERE author_id NOT IN (1, 2);
 -- 7. 논리 연산자 (AND / OR / NOT)
 -- ------------------------------------------
 
--- AND / &&
+-- AND / &&(앰퍼샌드)
 SELECT * FROM author
 WHERE name = '홍길동'
   AND email = 'abc@naver.com';
@@ -266,7 +267,7 @@ SELECT * FROM post
 WHERE title NOT LIKE '%test%';
 
 
--- REGEXP : 정규표현식 기반 패턴 검색
+-- REGEXP(Regular Expression) : 정규표현식 기반 패턴 검색
 -- 예) 영문 소문자 패턴
 SELECT * FROM author
 WHERE name REGEXP '^[a-z]+$';
@@ -286,12 +287,12 @@ WHERE name NOT REGEXP '^[가-힣]+$';
 
 -- 9-1) CAST 함수
 --  CAST(a AS type)
---  - 문자열/숫자 등을 특정 타입으로 변환할 때 사용.
+--  - 문자열/숫자 등을 특정 타입으로 변환할 때 사용. DATE_FORMAT보다 유연함
 
 -- 예) 숫자를 DATE 로 변환
 SELECT CAST(20200101 AS DATE);      -- 2020-01-01
 
--- 예) 문자열을 정수로 변환
+-- 예) 문자열을 정수로 변환, 그냥 UNSIGNED를 사용하는걸로 
 SELECT CAST('12' AS UNSIGNED);
 SELECT CAST('12' AS INT);
 
@@ -336,12 +337,12 @@ WHERE DATE_FORMAT(created_time, '%Y') = '2025';
 -- 11월 데이터만 조회
 SELECT *
 FROM post
-WHERE DATE_FORMAT(created_time, '%m') = '11';
+WHERE DATE_FORMAT(created_time, '%m') = '01';
 
 -- 또는 캐스팅과 함께 활용 (숫자로 비교)
 SELECT *
 FROM post
-WHERE CAST(DATE_FORMAT(created_time, '%m') AS UNSIGNED) = 11;
+WHERE CAST(DATE_FORMAT(created_time, '%m') AS UNSIGNED) = 1;
 
 
 -- ------------------------------------------
