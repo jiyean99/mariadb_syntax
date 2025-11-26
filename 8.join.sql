@@ -237,3 +237,41 @@ SELECT DATE_FORMAT(created_time, '%Y-%m-%d') AS '날짜',
 FROM post
 WHERE created_time IS NOT NULL
 GROUP BY DATE_FORMAT(created_time, '%Y-%m-%d');
+
+
+-- ------------------------------------------
+-- 6. HAVING 절 (그룹화 후 조건 지정)
+-- ------------------------------------------
+
+-- HAVING은 GROUP BY로 그룹화된 결과에 대한 조건을 지정할 때 사용.
+-- WHERE는 "그룹화 전 전체 데이터"에 대한 조건,
+-- HAVING은 "그룹화 후 집계된 결과"에 대한 조건.
+
+-- 예) 글을 2번 이상 쓴 author_id 조회
+SELECT author_id, COUNT(*)
+FROM post
+GROUP BY author_id
+HAVING COUNT(*) >= 2;
+
+
+-- ------------------------------------------
+-- 7. 다중 컬럼 GROUP BY
+-- ------------------------------------------
+
+-- 여러 컬럼을 순차적으로 그룹핑
+-- 먼저 첫 번째 컬럼 기준으로 그룹핑, 
+-- 그 다음 두 번째 컬럼 기준으로 그룹핑 (그리고 그 결과 값 단위로 집계 수행)
+
+-- 예) 작성자(author_id)별로, 같은 제목(title)의 글 몇 개 있는지 출력
+SELECT author_id, title, COUNT(*)
+FROM post
+GROUP BY author_id, title;
+
+
+-- ------------------------------------------
+-- 8. 사용 시 주의점 및 팁
+-- ------------------------------------------
+
+-- - HAVING은 반드시 GROUP BY와 함께 사용
+-- - HAVING에 조건을 지정할 때는 집계 함수(예: COUNT, SUM, AVG 등)를 직접 사용할 수 있음
+-- - 다중 컬럼 GROUP BY는 그룹화 순서를 명확히 이해하고 쿼리를 작성
